@@ -6,18 +6,18 @@ int positiveIntegers = 0, negativeIntegers = 0, positiveFractions = 0, negativeF
 
 digit [0-9]
 
-positiveInteger \+?{digit}
-negativeInteger -{digit}
+positiveInteger \+?{digit}+
+negativeInteger -{digit}+
 
 %%
 {positiveInteger} positiveIntegers++;
 {negativeInteger} negativeIntegers++;
 
-{positiveInteger}/{positiveInteger} positiveFractions++;
-{negativeInteger}/{negativeInteger} positiveFractions++;
+{positiveInteger}\/{positiveInteger} positiveFractions++;
+{negativeInteger}\/{negativeInteger} positiveFractions++;
 
-{positiveInteger}/{negativeInteger} negativeFractions++;
-{negativeInteger}/{positiveInteger} negativeFractions++;
+{positiveInteger}\/{negativeInteger} negativeFractions++;
+{negativeInteger}\/{positiveInteger} negativeFractions++;
 
 %%
 
