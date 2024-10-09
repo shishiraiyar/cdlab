@@ -2,12 +2,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+int nestCount = 0;
+int maxNestCount = 0;
 
-// Im just counting for loops. If they ask to check nesting do count>=3 or something and fool them like that
-int fCount = 0;
-
-//extern keyword is important
+int max(int a, int b){
+	return (a > b ? a : b);
+}
 extern FILE *yyin;
+
+// KNOWN ISSUE: Fails when there is an assignment in the body.
 %}
 
 %token NUM IDEN RELOP FOR INCDEC
@@ -16,8 +19,15 @@ extern FILE *yyin;
 
 S : F
 
-F : FOR FHEAD '{' FBODY '}' {fCount++;}
-  | FOR FHEAD 				{fCount++;}
+F : FOR {nestCount++;
+		 maxNestCount = max(maxNestCount, nestCount);
+		}
+	FHEAD '{' FBODY '}' {nestCount--;}
+
+  | FOR {nestCount++;
+		 maxNestCount = max(maxNestCount, nestCount);
+		}
+	FHEAD {nestCount--;} 
   ;
 
 FHEAD : '(' E ';' E ';' E ')' 
@@ -49,7 +59,7 @@ int yyerror(char *msg){
 int main(){
 	yyin = fopen("input.c", "r");
 	yyparse();
-	printf("Nested forloop count: %d\n", fCount);
+	printf("Nested forloop count: %d\n", maxNestCount);
 	return 0;
 
 }
