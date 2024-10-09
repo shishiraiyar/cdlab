@@ -14,6 +14,8 @@ char *addToTable(char op, char *arg1, char *arg2, char *res);
 char *getTemporaryVariable();
 void printTable();
 void printThreeAddressCode();
+
+extern FILE *yyin;
 %}
 
 %union{
@@ -27,7 +29,9 @@ void printThreeAddressCode();
 %left '*' '/'
 %%
 
-PROG : EXP ;
+PROG : PROG EXP ';'
+	 | EXP ';'
+	 ;
 
 EXP : EXP '+' EXP {$$ = addToTable('+', $1, $3, getTemporaryVariable());}
 	| EXP '-' EXP {$$ = addToTable('-', $1, $3, getTemporaryVariable());}
@@ -48,6 +52,7 @@ int yyerror(char *msg){
 }
 
 int main(){
+	yyin = fopen("input.c", "r");
 	yyparse();
 	printTable();
 	printThreeAddressCode();
